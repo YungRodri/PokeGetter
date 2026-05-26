@@ -51,41 +51,42 @@ public class GameScreen implements Screen {
 	      lluvia.crear();
 	}
 
-	@Override
-	public void render(float delta) {
-		//limpia la pantalla con color azul obscuro.
-		ScreenUtils.clear(0, 0, 0.2f, 1);
-		//actualizar matrices de la cámara
-		camera.update();
-		//actualizar
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		//dibujar textos
+    @Override
+    public void render(float delta) {
+        ScreenUtils.clear(0, 0, 0.2f, 1);
+
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+
+        // Movimiento del jugador solo si no está herido
+        if (!tarro.estaHerido()) {
+            tarro.actualizarMovimiento();
+        }
+
+        // La lluvia/pokebolas siempre se actualiza
+        if (!lluvia.actualizarMovimiento(tarro)) {
+
+            if (game.getHigherScore() < lluvia.getPuntaje()) {
+                game.setHigherScore(lluvia.getPuntaje());
+            }
+
+            game.setScreen(new GameOverScreen(game));
+            dispose();
+            return;
+        }
+
+        batch.begin();
+
+        tarro.dibujar(batch);
+        lluvia.actualizarDibujoLluvia(batch);
+
         font.draw(batch, "Puntos: " + lluvia.getPuntaje(), 5, 475);
         font.draw(batch, "Vidas: " + lluvia.getVidas(), 670, 475);
         font.draw(batch, "HighScore: " + game.getHigherScore(), camera.viewportWidth / 2 - 50, 475);
+        font.draw(batch, "Nivel: " + lluvia.getDificultadActual(), 360, 445);
 
-		if (!tarro.estaHerido()) {
-			// movimiento del tarro desde teclado
-	        tarro.actualizarMovimiento();
-			// caida de la lluvia
-	       if (!lluvia.actualizarMovimiento(tarro)) {
-	    	  //actualizar HigherScore
-               if (game.getHigherScore() < lluvia.getPuntaje())
-               {
-                   game.setHigherScore(lluvia.getPuntaje());
-               }
-	    	  //ir a la ventana de finde juego y destruir la actual
-	    	  game.setScreen(new GameOverScreen(game));
-	    	  dispose();
-	       }
-		}
-
-		tarro.dibujar(batch);
-		lluvia.actualizarDibujoLluvia(batch);
-
-		batch.end();
-	}
+        batch.end();
+    }
 
 	@Override
 	public void resize(int width, int height) {

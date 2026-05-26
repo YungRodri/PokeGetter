@@ -24,6 +24,7 @@ public class Lluvia {
 
     private EstadoJuego estadoJuego;
     private Nivel nivelActual;
+    private int dificultadActual;
 
     public Lluvia(Texture gotaBuena, Texture gotaMala, Texture gotaCurativa, Texture gotaRocketFuerte, Sound ss, Music mm) {
         this.rainMusic = mm;
@@ -34,11 +35,21 @@ public class Lluvia {
         this.gotaRocketFuerte = gotaRocketFuerte;
         this.estadoJuego = new EstadoJuego();
     }
+    private Nivel crearNivelFacil() {
+        return new NivelBuilder()
+            .conProbabilidadRocketFuerte(5)
+            .conProbabilidadRocket(20)
+            .conProbabilidadCurativa(40)
+            .conVelocidadNormal(260)
+            .conVelocidadCurativa(230)
+            .conVelocidadRocket(310)
+            .conVelocidadRocketFuerte(360)
+            .conTiempoGeneracion(700000000)
+            .build();
+    }
 
-    public void crear() {
-        pokebolas = new Array<Pokebola>();
-
-        nivelActual = new NivelBuilder()
+    private Nivel crearNivelMedio() {
+        return new NivelBuilder()
             .conProbabilidadRocketFuerte(10)
             .conProbabilidadRocket(30)
             .conProbabilidadCurativa(45)
@@ -48,6 +59,45 @@ public class Lluvia {
             .conVelocidadRocketFuerte(420)
             .conTiempoGeneracion(500000000)
             .build();
+    }
+
+    private Nivel crearNivelDificil() {
+        return new NivelBuilder()
+            .conProbabilidadRocketFuerte(18)
+            .conProbabilidadRocket(45)
+            .conProbabilidadCurativa(55)
+            .conVelocidadNormal(350)
+            .conVelocidadCurativa(290)
+            .conVelocidadRocket(430)
+            .conVelocidadRocketFuerte(520)
+            .conTiempoGeneracion(350000000)
+            .build();
+    }
+    private void actualizarDificultad() {
+        int puntaje = estadoJuego.getPuntaje();
+
+        if (puntaje >= 300) {
+            if (dificultadActual != 3) {
+                dificultadActual = 3;
+                nivelActual = crearNivelDificil();
+            }
+        } else if (puntaje >= 100) {
+            if (dificultadActual != 2) {
+                dificultadActual = 2;
+                nivelActual = crearNivelMedio();
+            }
+        } else {
+            if (dificultadActual != 1) {
+                dificultadActual = 1;
+                nivelActual = crearNivelFacil();
+            }
+        }
+    }
+    public void crear() {
+        pokebolas = new Array<Pokebola>();
+
+        dificultadActual = 1;
+        nivelActual = crearNivelFacil();
 
         crearPokebola();
 
@@ -80,6 +130,9 @@ public class Lluvia {
                 }
             }
         }
+
+        actualizarDificultad();
+
 
         return true;
     }
@@ -138,5 +191,8 @@ public class Lluvia {
 
     public void continuar() {
         rainMusic.play();
+    }
+    public int getDificultadActual() {
+        return dificultadActual;
     }
 }
