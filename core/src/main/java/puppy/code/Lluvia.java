@@ -77,21 +77,26 @@ public class Lluvia {
         float y = 480;
 
         int azar = MathUtils.random(1, 100);
+        Pokebola pokebola;
 
         if (azar <= 10) {
-            // 10% Rocket fuerte: quita 2 vidas y cae más rápido
-            pokebolas.add(new PokebolaRocketFuerte(x, y, 420, gotaRocketFuerte));
+            pokebola = new PokebolaRocketFuerte(x, y, 420, gotaRocketFuerte);
+            pokebola.setEstrategiaMovimiento(new MovimientoZigZag());
+
         } else if (azar <= 30) {
-            // 20% Rocket normal: quita 1 vida
-            pokebolas.add(new PokebolaRocket(x, y, 350, gotaMala));
+            pokebola = new PokebolaRocket(x, y, 350, gotaMala);
+            pokebola.setEstrategiaMovimiento(new MovimientoRapido());
+
         } else if (azar <= 45) {
-            // 15% Curativa: recupera 1 vida
-            pokebolas.add(new PokebolaCurativa(x, y, 250, gotaCurativa));
+            pokebola = new PokebolaCurativa(x, y, 250, gotaCurativa);
+            pokebola.setEstrategiaMovimiento(new MovimientoNormal());
+
         } else {
-            // 55% Normal: suma puntos
-            pokebolas.add(new PokebolaNormal(x, y, 300, gotaBuena));
+            pokebola = new PokebolaNormal(x, y, 300, gotaBuena);
+            pokebola.setEstrategiaMovimiento(new MovimientoNormal());
         }
 
+        pokebolas.add(pokebola);
         lastDropTime = TimeUtils.nanoTime();
     }
 

@@ -12,6 +12,7 @@ public abstract class Pokebola implements EfectoCaptura {
     private Texture textura;
     private Rectangle bounds;
     private boolean eliminada;
+    private EstrategiaMovimiento estrategiaMovimiento;
 
     public Pokebola(float x, float y, float velocidad, Texture textura) {
         this.x = x;
@@ -20,17 +21,39 @@ public abstract class Pokebola implements EfectoCaptura {
         this.textura = textura;
         this.bounds = new Rectangle(x, y, 64, 64);
         this.eliminada = false;
+        this.estrategiaMovimiento = new MovimientoNormal();
     }
 
-    public void actualizar(float delta) {
-        this.y -= velocidad * delta;
-        this.bounds.setPosition(x, y);
+    public final void actualizar(float delta) {
+        estrategiaMovimiento.mover(this, delta);
 
         if (salioDePantalla()) {
             eliminar();
         }
     }
 
+    public void mover(float movimientoX, float movimientoY) {
+        this.x += movimientoX;
+        this.y += movimientoY;
+
+        if (this.x < 0) {
+            this.x = 0;
+        }
+
+        if (this.x > 800 - 64) {
+            this.x = 800 - 64;
+        }
+
+        this.bounds.setPosition(this.x, this.y);
+    }
+
+    public float getVelocidad() {
+        return velocidad;
+    }
+
+    public void setEstrategiaMovimiento(EstrategiaMovimiento estrategiaMovimiento) {
+        this.estrategiaMovimiento = estrategiaMovimiento;
+    }
     public void dibujar(SpriteBatch batch) {
         batch.draw(textura, x, y, 64, 64);
     }
