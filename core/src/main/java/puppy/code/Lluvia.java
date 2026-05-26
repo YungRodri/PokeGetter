@@ -23,6 +23,7 @@ public class Lluvia {
     private Music rainMusic;
 
     private EstadoJuego estadoJuego;
+    private Nivel nivelActual;
 
     public Lluvia(Texture gotaBuena, Texture gotaMala, Texture gotaCurativa, Texture gotaRocketFuerte, Sound ss, Music mm) {
         this.rainMusic = mm;
@@ -36,15 +37,26 @@ public class Lluvia {
 
     public void crear() {
         pokebolas = new Array<Pokebola>();
+
+        nivelActual = new NivelBuilder()
+            .conProbabilidadRocketFuerte(10)
+            .conProbabilidadRocket(30)
+            .conProbabilidadCurativa(45)
+            .conVelocidadNormal(300)
+            .conVelocidadCurativa(250)
+            .conVelocidadRocket(350)
+            .conVelocidadRocketFuerte(420)
+            .conTiempoGeneracion(500000000)
+            .build();
+
         crearPokebola();
 
         rainMusic.setLooping(true);
         rainMusic.play();
     }
-
     public boolean actualizarMovimiento(Tarro tarro) {
 
-        if (TimeUtils.nanoTime() - lastDropTime > 500000000) {
+        if (TimeUtils.nanoTime() - lastDropTime > nivelActual.getTiempoGeneracion()) {
             crearPokebola();
         }
 
@@ -79,20 +91,20 @@ public class Lluvia {
         int azar = MathUtils.random(1, 100);
         Pokebola pokebola;
 
-        if (azar <= 10) {
-            pokebola = new PokebolaRocketFuerte(x, y, 420, gotaRocketFuerte);
+        if (azar <= nivelActual.getProbabilidadRocketFuerte()) {
+            pokebola = new PokebolaRocketFuerte(x, y, nivelActual.getVelocidadRocketFuerte(), gotaRocketFuerte);
             pokebola.setEstrategiaMovimiento(new MovimientoZigZag());
 
-        } else if (azar <= 30) {
-            pokebola = new PokebolaRocket(x, y, 350, gotaMala);
+        } else if (azar <= nivelActual.getProbabilidadRocket()) {
+            pokebola = new PokebolaRocket(x, y, nivelActual.getVelocidadRocket(), gotaMala);
             pokebola.setEstrategiaMovimiento(new MovimientoRapido());
 
-        } else if (azar <= 45) {
-            pokebola = new PokebolaCurativa(x, y, 250, gotaCurativa);
+        } else if (azar <= nivelActual.getProbabilidadCurativa()) {
+            pokebola = new PokebolaCurativa(x, y, nivelActual.getVelocidadCurativa(), gotaCurativa);
             pokebola.setEstrategiaMovimiento(new MovimientoNormal());
 
         } else {
-            pokebola = new PokebolaNormal(x, y, 300, gotaBuena);
+            pokebola = new PokebolaNormal(x, y, nivelActual.getVelocidadNormal(), gotaBuena);
             pokebola.setEstrategiaMovimiento(new MovimientoNormal());
         }
 
