@@ -16,17 +16,21 @@ public class Lluvia {
 
     private Texture gotaBuena;
     private Texture gotaMala;
+    private Texture gotaCurativa;
+    private Texture gotaRocketFuerte;
 
     private Sound dropSound;
     private Music rainMusic;
 
     private EstadoJuego estadoJuego;
 
-    public Lluvia(Texture gotaBuena, Texture gotaMala, Sound ss, Music mm) {
+    public Lluvia(Texture gotaBuena, Texture gotaMala, Texture gotaCurativa, Texture gotaRocketFuerte, Sound ss, Music mm) {
         this.rainMusic = mm;
         this.dropSound = ss;
         this.gotaBuena = gotaBuena;
         this.gotaMala = gotaMala;
+        this.gotaCurativa = gotaCurativa;
+        this.gotaRocketFuerte = gotaRocketFuerte;
         this.estadoJuego = new EstadoJuego();
     }
 
@@ -38,45 +42,21 @@ public class Lluvia {
         rainMusic.play();
     }
 
-    private void crearPokebola() {
-        float x = MathUtils.random(0, 800 - 64);
-        float y = 480;
-        float velocidad = 300;
-
-        /*
-         * Probabilidad:
-         * 30% PokebolaRocket
-         * 70% PokebolaNormal
-         */
-        if (MathUtils.random(1, 10) <= 3) {
-            pokebolas.add(new PokebolaRocket(x, y, velocidad, gotaMala));
-        } else {
-            pokebolas.add(new PokebolaNormal(x, y, velocidad, gotaBuena));
-        }
-
-        lastDropTime = TimeUtils.nanoTime();
-    }
-
     public boolean actualizarMovimiento(Tarro tarro) {
 
-        // generar pokebolas cada cierto tiempo
-        if (TimeUtils.nanoTime() - lastDropTime > 100000000) {
+        if (TimeUtils.nanoTime() - lastDropTime > 500000000) {
             crearPokebola();
         }
 
-        // recorrer desde atrás para poder eliminar sin problemas
         for (int i = pokebolas.size - 1; i >= 0; i--) {
 
             Pokebola pokebola = pokebolas.get(i);
 
             pokebola.actualizar(Gdx.graphics.getDeltaTime());
 
-            // si cae al suelo, se elimina
             if (pokebola.estaEliminada()) {
                 pokebolas.removeIndex(i);
-            }
-            // si choca con Charmander/Tarro, aplica su efecto
-            else if (pokebola.getBounds().overlaps(tarro.getArea())) {
+            } else if (pokebola.getBounds().overlaps(tarro.getArea())) {
 
                 pokebola.capturar(estadoJuego);
                 dropSound.play();
@@ -90,6 +70,29 @@ public class Lluvia {
         }
 
         return true;
+    }
+
+    private void crearPokebola() {
+        float x = MathUtils.random(0, 800 - 64);
+        float y = 480;
+
+        int azar = MathUtils.random(1, 100);
+
+        if (azar <= 10) {
+            // 10% Rocket fuerte: quita 2 vidas y cae más rápido
+            pokebolas.add(new PokebolaRocketFuerte(x, y, 420, gotaRocketFuerte));
+        } else if (azar <= 30) {
+            // 20% Rocket normal: quita 1 vida
+            pokebolas.add(new PokebolaRocket(x, y, 350, gotaMala));
+        } else if (azar <= 45) {
+            // 15% Curativa: recupera 1 vida
+            pokebolas.add(new PokebolaCurativa(x, y, 250, gotaCurativa));
+        } else {
+            // 55% Normal: suma puntos
+            pokebolas.add(new PokebolaNormal(x, y, 300, gotaBuena));
+        }
+
+        lastDropTime = TimeUtils.nanoTime();
     }
 
     public void actualizarDibujoLluvia(SpriteBatch batch) {
