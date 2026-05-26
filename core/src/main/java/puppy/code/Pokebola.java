@@ -50,8 +50,8 @@ public abstract class Pokebola implements EfectoCaptura {
     public void eliminar() {
         this.eliminada = true;
     }
-    public final void capturar(EstadoJuego estadoJuego) {
-        aplicarEfecto(estadoJuego);
+    public final void capturar(EstadoJuego estadoJuego, Tarro tarro) {
+        aplicarEfecto(estadoJuego, tarro);
         eliminar();
     }
 }

@@ -9,7 +9,7 @@ public class PokebolaCurativa extends Pokebola {
     }
 
     @Override
-    public void aplicarEfecto(EstadoJuego estadoJuego) {
+    public void aplicarEfecto(EstadoJuego estadoJuego, Tarro tarro) {
         estadoJuego.recuperarVida(1);
         estadoJuego.sumarPuntos(5);
     }

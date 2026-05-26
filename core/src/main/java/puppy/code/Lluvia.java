@@ -58,7 +58,7 @@ public class Lluvia {
                 pokebolas.removeIndex(i);
             } else if (pokebola.getBounds().overlaps(tarro.getArea())) {
 
-                pokebola.capturar(estadoJuego);
+                pokebola.capturar(estadoJuego, tarro);
                 dropSound.play();
 
                 pokebolas.removeIndex(i);
