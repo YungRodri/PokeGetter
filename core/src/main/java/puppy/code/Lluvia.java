@@ -78,7 +78,7 @@ public class Lluvia {
             // si choca con Charmander/Tarro, aplica su efecto
             else if (pokebola.getBounds().overlaps(tarro.getArea())) {
 
-                pokebola.aplicarEfecto(estadoJuego);
+                pokebola.capturar(estadoJuego);
                 dropSound.play();
 
                 pokebolas.removeIndex(i);
