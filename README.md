@@ -1,33 +1,34 @@
-# GameLluviaMenu2024
+# PokeGetter
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+Proyecto de videojuego desarrollado en Java con LibGDX para la asignatura Programación Avanzada.
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+## Descripción
 
-## Platforms
+PokeGetter es un juego basado en la mecánica de atrapar objetos que caen desde la parte superior de la pantalla. El jugador controla a Charmander y debe atrapar pokebolas positivas, evitando las pokebolas negativas del equipo Rocket.
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+## Mecánicas implementadas
 
-## Gradle
+- Pokebola normal: suma puntos.
+- Pokebola curativa: recupera vida.
+- Pokebola Rocket: quita vida.
+- Pokebola Rocket fuerte: quita más vida.
+- Sistema de puntaje.
+- Sistema de vidas.
+- Pantalla de pausa.
+- Pantalla de Game Over.
+- Sprites personalizados.
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+## Requisitos técnicos aplicados
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+- Clase abstracta `Pokebola`.
+- Interfaz `EfectoCaptura`.
+- Uso de polimorfismo mediante `aplicarEfecto`.
+- Patrón Template Method mediante el método `capturar`.
+- Proyecto desarrollado en Java con LibGDX.
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+## Ejecución
+
+Para ejecutar el proyecto desde terminal:
+
+```bash
+.\gradlew.bat lwjgl3:run
