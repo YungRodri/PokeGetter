@@ -70,7 +70,7 @@ public class GameScreen implements Screen {
                 game.setHigherScore(lluvia.getPuntaje());
             }
 
-            game.setScreen(new GameOverScreen(game));
+            game.setScreen(new GameOverScreen(game, lluvia.getPuntaje()));
             dispose();
             return;
         }
