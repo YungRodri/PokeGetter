@@ -74,7 +74,7 @@ public class Tarro {
     }
 
     public void destruir() {
-        bucketImage.dispose();
+        //bucketImage.dispose();
     }
 
     public boolean estaHerido() {

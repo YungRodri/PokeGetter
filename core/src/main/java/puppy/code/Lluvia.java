@@ -181,8 +181,9 @@ public class Lluvia {
     }
 
     public void destruir() {
-        dropSound.dispose();
-        rainMusic.dispose();
+        //dropSound.dispose();
+        //rainMusic.dispose();
+        rainMusic.stop();
     }
 
     public void pausar() {

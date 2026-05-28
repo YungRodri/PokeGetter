@@ -25,21 +25,22 @@ public class GameScreen implements Screen {
 		this.game = game;
         this.batch = game.getBatch();
         this.font = game.getFont();
-		  // load the images for the droplet and the bucket, 64x64 pixels each
-		  Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
-		  tarro = new Tarro(new Texture(Gdx.files.internal("bucket.png")),hurtSound);
+        // load the images for the droplet and the bucket, 64x64 pixels each
+        GestorRecursos recursos = GestorRecursos.getInstancia();
 
-	      // load the drop sound effect and the rain background "music"
-        Texture gota = new Texture(Gdx.files.internal("drop.png"));
-        Texture gotaMala = new Texture(Gdx.files.internal("dropBad.png"));
-        Texture gotaCurativa = new Texture(Gdx.files.internal("dropHeal.png"));
-        Texture gotaRocketFuerte = new Texture(Gdx.files.internal("dropRocketStrong.png"));
+        tarro = new Tarro(
+            recursos.getTexturaJugador(),
+            recursos.getSonidoHerido()
+        );
 
-        Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-
-        Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-        lluvia = new Lluvia(gota, gotaMala, gotaCurativa, gotaRocketFuerte, dropSound, rainMusic);
-
+        lluvia = new Lluvia(
+            recursos.getTexturaPokebolaNormal(),
+            recursos.getTexturaPokebolaRocket(),
+            recursos.getTexturaPokebolaCurativa(),
+            recursos.getTexturaPokebolaRocketFuerte(),
+            recursos.getSonidoDrop(),
+            recursos.getMusicaLluvia()
+        );
 	      // camera
 	      camera = new OrthographicCamera();
 	      camera.setToOrtho(false, 800, 480);
