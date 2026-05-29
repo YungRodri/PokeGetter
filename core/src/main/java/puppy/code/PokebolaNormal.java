@@ -9,7 +9,7 @@ public class PokebolaNormal extends Pokebola {
     }
 
     @Override
-    public void aplicarEfecto(EstadoJuego estadoJuego) {
+    public void aplicarEfecto(EstadoJuego estadoJuego, Tarro tarro) {
         estadoJuego.sumarPuntos(10);
         //estadoJuego.recuperarVida(1);
     }

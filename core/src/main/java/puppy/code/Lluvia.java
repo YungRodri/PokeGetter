@@ -18,19 +18,23 @@ public class Lluvia {
     private Texture gotaMala;
     private Texture gotaCurativa;
     private Texture gotaRocketFuerte;
+    private Texture gotaBuff;
+    private Texture gotaDebuff;
 
     private Sound dropSound;
     private Music rainMusic;
 
     private EstadoJuego estadoJuego;
 
-    public Lluvia(Texture gotaBuena, Texture gotaMala, Texture gotaCurativa, Texture gotaRocketFuerte, Sound ss, Music mm) {
+    public Lluvia(Texture gotaBuena, Texture gotaMala, Texture gotaCurativa, Texture gotaRocketFuerte, Texture gotaBuff, Texture gotaDebuff, Sound ss, Music mm) {
         this.rainMusic = mm;
         this.dropSound = ss;
         this.gotaBuena = gotaBuena;
         this.gotaMala = gotaMala;
         this.gotaCurativa = gotaCurativa;
         this.gotaRocketFuerte = gotaRocketFuerte;
+        this.gotaBuff = gotaBuff;
+        this.gotaDebuff = gotaDebuff;
         this.estadoJuego = new EstadoJuego();
     }
 
@@ -58,7 +62,7 @@ public class Lluvia {
                 pokebolas.removeIndex(i);
             } else if (pokebola.getBounds().overlaps(tarro.getArea())) {
 
-                pokebola.capturar(estadoJuego);
+                pokebola.capturar(estadoJuego, tarro);
                 dropSound.play();
 
                 pokebolas.removeIndex(i);
@@ -84,9 +88,14 @@ public class Lluvia {
         } else if (azar <= 30) {
             // 20% Rocket normal: quita 1 vida
             pokebolas.add(new PokebolaRocket(x, y, 350, gotaMala));
+        } else if (azar <= 35) {
+            // 5% Curativa: recupera 1 vida
+            pokebolas.add(new PokebolaCurativa(x, y, 420, gotaCurativa));
         } else if (azar <= 45) {
-            // 15% Curativa: recupera 1 vida
-            pokebolas.add(new PokebolaCurativa(x, y, 250, gotaCurativa));
+            // 10% VelozBall: duplica velocidad movimiento
+            pokebolas.add(new VelozBall(x, y, 420, gotaBuff));
+        } else if (azar <= 55) {
+            pokebolas.add(new PesoBall(x, y, 420, gotaDebuff));
         } else {
             // 55% Normal: suma puntos
             pokebolas.add(new PokebolaNormal(x, y, 300, gotaBuena));

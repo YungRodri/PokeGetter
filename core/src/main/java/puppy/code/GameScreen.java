@@ -17,6 +17,7 @@ public class GameScreen implements Screen {
 	private BitmapFont font;
 	private Tarro tarro;
 	private Lluvia lluvia;
+        private Texture fondo;
 
 
 	//boolean activo = true;
@@ -34,11 +35,14 @@ public class GameScreen implements Screen {
         Texture gotaMala = new Texture(Gdx.files.internal("dropBad.png"));
         Texture gotaCurativa = new Texture(Gdx.files.internal("dropHeal.png"));
         Texture gotaRocketFuerte = new Texture(Gdx.files.internal("dropRocketStrong.png"));
+        Texture gotaBuff = new Texture(Gdx.files.internal("dropSpeed.png"));
+        Texture gotaDebuff = new Texture(Gdx.files.internal("dropSlow.png"));
+        fondo = new Texture(Gdx.files.internal("Fondo.png"));
 
         Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
 
         Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-        lluvia = new Lluvia(gota, gotaMala, gotaCurativa, gotaRocketFuerte, dropSound, rainMusic);
+        lluvia = new Lluvia(gota, gotaMala, gotaCurativa, gotaRocketFuerte, gotaBuff, gotaDebuff, dropSound, rainMusic);
 
 	      // camera
 	      camera = new OrthographicCamera();
@@ -60,6 +64,7 @@ public class GameScreen implements Screen {
 		//actualizar
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+                batch.draw(fondo, 0, 0, 800, 480);
 		//dibujar textos
         font.draw(batch, "Puntos: " + lluvia.getPuntaje(), 5, 475);
         font.draw(batch, "Vidas: " + lluvia.getVidas(), 670, 475);
@@ -114,10 +119,9 @@ public class GameScreen implements Screen {
 	}
 
 	@Override
-	public void dispose() {
-      tarro.destruir();
-      lluvia.destruir();
-
-	}
-
+        public void dispose() {
+            tarro.destruir();
+            lluvia.destruir();
+            fondo.dispose(); // <--- DESTRUIR EL FONDO
+        }
 }

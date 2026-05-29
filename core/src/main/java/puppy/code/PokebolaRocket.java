@@ -9,7 +9,7 @@ public class PokebolaRocket extends Pokebola {
     }
 
     @Override
-    public void aplicarEfecto(EstadoJuego estadoJuego) {
+    public void aplicarEfecto(EstadoJuego estadoJuego, Tarro tarro) {
         estadoJuego.quitarVida(1);
     }
 }
