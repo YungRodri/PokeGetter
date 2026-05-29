@@ -1,31 +1,27 @@
 package puppy.code;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameScreen implements Screen {
-	final GameLluviaMenu game;
+
+    private final GameLluviaMenu game;
     private OrthographicCamera camera;
-	private SpriteBatch batch;
-	private BitmapFont font;
-	private Tarro tarro;
-	private Lluvia lluvia;
+    private SpriteBatch batch;
+    private BitmapFont font;
+    private Tarro tarro;
+    private Lluvia lluvia;
 
-
-	//boolean activo = true;
-
-	public GameScreen(final GameLluviaMenu game) {
-		this.game = game;
+    public GameScreen(final GameLluviaMenu game) {
+        this.game = game;
         this.batch = game.getBatch();
         this.font = game.getFont();
-        // load the images for the droplet and the bucket, 64x64 pixels each
+
         GestorRecursos recursos = GestorRecursos.getInstancia();
 
         tarro = new Tarro(
@@ -41,85 +37,100 @@ public class GameScreen implements Screen {
             recursos.getSonidoDrop(),
             recursos.getMusicaLluvia()
         );
-	      // camera
-	      camera = new OrthographicCamera();
-	      camera.setToOrtho(false, 800, 480);
-	      batch = new SpriteBatch();
-	      // creacion del tarro
-	      tarro.crear();
 
-	      // creacion de la lluvia
-	      lluvia.crear();
-	}
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 480);
+
+        tarro.crear();
+        lluvia.crear();
+    }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0.2f, 1);
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            pausarJuego();
+            return;
+        }
+
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
-        // Movimiento del jugador solo si no está herido
+        actualizarJuego();
+        dibujarJuego();
+    }
+
+    private void actualizarJuego() {
         if (!tarro.estaHerido()) {
             tarro.actualizarMovimiento();
         }
 
-        // La lluvia/pokebolas siempre se actualiza
         if (!lluvia.actualizarMovimiento(tarro)) {
-
-            if (game.getHigherScore() < lluvia.getPuntaje()) {
-                game.setHigherScore(lluvia.getPuntaje());
-            }
+            actualizarHighScore();
 
             game.setScreen(new GameOverScreen(game, lluvia.getPuntaje()));
             dispose();
-            return;
         }
+    }
 
+    private void actualizarHighScore() {
+        if (game.getHigherScore() < lluvia.getPuntaje()) {
+            game.setHigherScore(lluvia.getPuntaje());
+        }
+    }
+
+    private void dibujarJuego() {
         batch.begin();
 
         tarro.dibujar(batch);
         lluvia.actualizarDibujoLluvia(batch);
-
-        font.draw(batch, "Puntos: " + lluvia.getPuntaje(), 5, 475);
-        font.draw(batch, "Vidas: " + lluvia.getVidas(), 670, 475);
-        font.draw(batch, "HighScore: " + game.getHigherScore(), camera.viewportWidth / 2 - 50, 475);
-        font.draw(batch, "Nivel: " + lluvia.getDificultadActual(), 360, 445);
+        dibujarHUD();
 
         batch.end();
     }
 
-	@Override
-	public void resize(int width, int height) {
-	}
+    private void dibujarHUD() {
+        font.getData().setScale(1.25f);
 
-	@Override
-	public void show() {
-	  // continuar con sonido de lluvia
-	  lluvia.continuar();
-	}
+        font.draw(batch, "Puntos: " + lluvia.getPuntaje(), 20, 460);
+        font.draw(batch, "Vidas: " + lluvia.getVidas(), 620, 460);
+        font.draw(batch, "HighScore: " + game.getHigherScore(), 290, 460);
+        font.draw(batch, "Nivel: " + lluvia.getDificultadActual(), 350, 420);
 
-	@Override
-	public void hide() {
+        font.getData().setScale(1f);
+    }
 
-	}
+    private void pausarJuego() {
+        lluvia.pausar();
+        game.setScreen(new PausaScreen(game, this));
+    }
 
-	@Override
-	public void pause() {
-		lluvia.pausar();
-		game.setScreen(new PausaScreen(game, this));
-	}
+    @Override
+    public void resize(int width, int height) {
+    }
 
-	@Override
-	public void resume() {
+    @Override
+    public void show() {
+        lluvia.continuar();
+    }
 
-	}
+    @Override
+    public void hide() {
+    }
 
-	@Override
-	public void dispose() {
-      tarro.destruir();
-      lluvia.destruir();
+    @Override
+    public void pause() {
+        lluvia.pausar();
+    }
 
-	}
+    @Override
+    public void resume() {
+    }
 
+    @Override
+    public void dispose() {
+        tarro.destruir();
+        lluvia.destruir();
+    }
 }

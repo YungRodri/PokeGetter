@@ -85,4 +85,10 @@ public class GestorRecursos {
 
         musicaLluvia.dispose();
     }
+    public static void destruirInstancia() {
+        if (instancia != null) {
+            instancia.destruir();
+            instancia = null;
+        }
+    }
 }

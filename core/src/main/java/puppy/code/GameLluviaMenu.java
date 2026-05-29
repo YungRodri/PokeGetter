@@ -20,10 +20,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 			super.render(); // important!
 		}
 
-		public void dispose() {
-			batch.dispose();
-			font.dispose();
-		}
+        @Override
+        public void dispose() {
+            if (getScreen() != null) {
+                getScreen().dispose();
+            }
+
+            GestorRecursos.destruirInstancia();
+
+            batch.dispose();
+            font.dispose();
+        }
 
 		public SpriteBatch getBatch() {
 			return batch;
@@ -40,6 +47,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 		public void setHigherScore(int higherScore) {
 			this.higherScore = higherScore;
 		}
-		
+
 
 	}
