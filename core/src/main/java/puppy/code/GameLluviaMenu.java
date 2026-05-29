@@ -3,12 +3,15 @@ package puppy.code;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 	public class GameLluviaMenu extends Game {
 
 		private SpriteBatch batch;
 		private BitmapFont font;
 		private int higherScore;
+
 
 		public void create() {
 			batch = new SpriteBatch();
@@ -40,6 +43,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 		public void setHigherScore(int higherScore) {
 			this.higherScore = higherScore;
 		}
-		
+
 
 	}
