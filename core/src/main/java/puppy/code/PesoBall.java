@@ -10,14 +10,12 @@ import com.badlogic.gdx.graphics.Texture;
  */
 public class PesoBall extends Pokebola {
 
-    public PesoBall(float x, float y, float velocidad, Texture textura) {
-        super(x, y, velocidad, textura);
+    public PesoBall(float x, float y, float velocidad, Texture textura, int puntaje) {
+        super(x, y, velocidad, textura, puntaje);
     }
 
     @Override
     public void aplicarEfecto(EstadoJuego estadoJuego, Tarro tarro) {
-        // Puedes darle unos puntos extra si quieres
-        estadoJuego.sumarPuntos(15); 
         // Aplicamos el buff directamente a Charmander
         tarro.aplicarDebuffVelocidad();
     }

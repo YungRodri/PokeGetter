@@ -4,13 +4,12 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class PokebolaNormal extends Pokebola {
 
-    public PokebolaNormal(float x, float y, float velocidad, Texture textura) {
-        super(x, y, velocidad, textura);
+    public PokebolaNormal(float x, float y, float velocidad, Texture textura, int puntaje) {
+        super(x, y, velocidad, textura, puntaje);
     }
 
     @Override
     public void aplicarEfecto(EstadoJuego estadoJuego, Tarro tarro) {
-        estadoJuego.sumarPuntos(10);
-        //estadoJuego.recuperarVida(1);
+        estadoJuego.sumarPuntos(getPuntaje());
     }
 }
