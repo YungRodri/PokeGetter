@@ -37,12 +37,12 @@ public class GameScreen implements Screen {
         tarro = new Tarro(new Texture(Gdx.files.internal("bucket.png")), hurtSound);
 
 
-        Texture gota = new Texture(Gdx.files.internal("drop.png"));
-        Texture gotaMala = new Texture(Gdx.files.internal("dropBad.png"));
-        Texture gotaCurativa = new Texture(Gdx.files.internal("dropHeal.png"));
-        Texture gotaRocketFuerte = new Texture(Gdx.files.internal("dropRocketStrong.png"));
-        Texture gotaVeloz = new Texture(Gdx.files.internal("dropSpeed.png"));
-        Texture gotaPeso = new Texture(Gdx.files.internal("dropSlow.png"));
+        Texture gota = GestorRecursos.getInstance().getTexturaPokebolaNormal();
+        Texture gotaMala = GestorRecursos.getInstance().getTexturaPokebolaRocket();
+        Texture gotaCurativa = GestorRecursos.getInstance().getTexturaPokebolaCurativa();
+        Texture gotaRocketFuerte = GestorRecursos.getInstance().getTexturaPokebolaRocketFuerte();
+        Texture gotaVeloz = GestorRecursos.getInstance().getTexturaPokebolaVeloz();
+        Texture gotaPeso = GestorRecursos.getInstance().getTexturaPokebolaPeso();
 
         Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
         Music bgMusic = Gdx.audio.newMusic(Gdx.files.internal("Pokemon_Center.mp3"));

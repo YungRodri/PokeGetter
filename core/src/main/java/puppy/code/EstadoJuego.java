@@ -2,14 +2,23 @@ package puppy.code;
 
 public class EstadoJuego {
 
+    private static EstadoJuego instancia;
+
     private int vidas;
     private int puntaje;
-    private int vidasMaximas;
+    private static final int vidasMaximas = 5;
 
-    public EstadoJuego() {
+    private EstadoJuego() {
         this.vidas = 3;
         this.puntaje = 0;
-        this.vidasMaximas = 5;
+    }
+
+    // 3. Método público estático para obtener la instancia
+    public static EstadoJuego getInstance() {
+        if (instancia == null) {
+            instancia = new EstadoJuego();
+        }
+        return instancia;
     }
 
     public int getVidas() {
@@ -27,8 +36,8 @@ public class EstadoJuego {
     public void recuperarVida(int cantidad) {
         this.vidas += cantidad;
 
-        if (this.vidas > this.vidasMaximas) {
-            this.vidas = this.vidasMaximas;
+        if (this.vidas > vidasMaximas) {
+            this.vidas = vidasMaximas;
         }
     }
 
@@ -42,5 +51,11 @@ public class EstadoJuego {
 
     public boolean estaGameOver() {
         return this.vidas <= 0;
+    }
+    
+    // Método adicional recomendado para Singletons en juegos
+    public void reiniciar() {
+        this.vidas = 3;
+        this.puntaje = 0;
     }
 }

@@ -37,7 +37,8 @@ public class Lluvia {
         this.gotaRocketFuerte = gotaRocketFuerte;
         this.gotaVeloz = gotaVeloz;
         this.gotaPeso = gotaPeso;
-        this.estadoJuego = new EstadoJuego();
+        this.estadoJuego = EstadoJuego.getInstance();
+        this.estadoJuego.reiniciar();
     }
     private Nivel crearNivelFacil() {
         return new NivelBuilder()
