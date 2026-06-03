@@ -3,12 +3,15 @@ package puppy.code;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class GameOverScreen implements Screen {
 
@@ -18,6 +21,7 @@ public class GameOverScreen implements Screen {
     private OrthographicCamera camera;
     private int puntajeFinal;
     private Texture fondo;
+    private BitmapFont fuente;
 
     public GameOverScreen(final GameLluviaMenu game, int puntajeFinal) {
         this.game = game;
@@ -39,6 +43,17 @@ public class GameOverScreen implements Screen {
         this.fondo = new Texture(pixmapDestino);
         pixmapOriginal.dispose();
         pixmapDestino.dispose();
+        
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("pokemon_pixel_font.ttf"));
+        FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+        parameter.size = 42;
+        parameter.color = com.badlogic.gdx.graphics.Color.WHITE;
+        parameter.borderWidth = 2f;
+        parameter.borderColor = Color.BLACK;
+
+        this.fuente = generator.generateFont(parameter);
+
+        generator.dispose();
     }
 
     @Override
@@ -50,12 +65,13 @@ public class GameOverScreen implements Screen {
 
         batch.begin();
 
-        font.draw(batch, "GAME OVER", 330, 330);
-        font.draw(batch, "Puntaje final: " + puntajeFinal, 300, 270);
-        font.draw(batch, "HighScore: " + game.getHigherScore(), 320, 230);
+        batch.draw(fondo, 0,0, 800, 480);
+        fuente.draw(batch, "GAME OVER", 325, 330);
+        fuente.draw(batch, "Puntaje final: " + puntajeFinal, 280, 270);
+        fuente.draw(batch, "HighScore: " + game.getHigherScore(), 280, 230);
 
-        font.draw(batch, "Presiona ENTER para reiniciar", 270, 160);
-        font.draw(batch, "Presiona ESC para volver al menu", 260, 125);
+        fuente.draw(batch, "Presiona ENTER para reiniciar", 180, 160);
+        fuente.draw(batch, "Presiona ESC para volver al menu", 180, 125);
 
         batch.end();
 

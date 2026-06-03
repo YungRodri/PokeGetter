@@ -18,7 +18,6 @@ public class GameScreen implements Screen {
     final GameLluviaMenu game;
     private OrthographicCamera camera;
     private SpriteBatch batch;
-    private BitmapFont font;
     private Tarro tarro;
     private Lluvia lluvia;
     private Texture fondo;
@@ -31,7 +30,6 @@ public class GameScreen implements Screen {
 
         this.game = game;
         this.batch = game.getBatch();
-        this.font = game.getFont();
 
         Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
         tarro = new Tarro(new Texture(Gdx.files.internal("bucket.png")), hurtSound);
