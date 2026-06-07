@@ -27,7 +27,7 @@ public class MainMenuScreen implements Screen {
         this.font = game.getFont();
 	camera = new OrthographicCamera();
 	camera.setToOrtho(false, 800, 480);
-        
+
         Pixmap pixmapOriginal = new Pixmap(Gdx.files.internal("girl.png"));
         Pixmap pixmapDestino = new Pixmap(800, 480, pixmapOriginal.getFormat());
 
@@ -81,31 +81,36 @@ public class MainMenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void dispose() {
+        if (fondo != null) {
+            fondo.dispose();
+        }
+
+        if (fuente != null) {
+            fuente.dispose();
+        }
+    }
 
 }

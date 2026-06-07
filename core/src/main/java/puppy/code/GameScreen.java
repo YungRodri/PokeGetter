@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class GameScreen implements Screen {
-    final GameLluviaMenu game;
+    private final GameLluviaMenu game;
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private Tarro tarro;
@@ -31,9 +31,14 @@ public class GameScreen implements Screen {
         this.game = game;
         this.batch = game.getBatch();
 
-        Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
-        tarro = new Tarro(new Texture(Gdx.files.internal("bucket.png")), hurtSound);
+        GestorRecursos recursos = GestorRecursos.getInstance();
 
+        Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
+
+        tarro = new Tarro(
+            recursos.getTexturaTarro(),
+            hurtSound
+        );
 
         Texture gota = GestorRecursos.getInstance().getTexturaPokebolaNormal();
         Texture gotaMala = GestorRecursos.getInstance().getTexturaPokebolaRocket();
@@ -48,7 +53,7 @@ public class GameScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
-        batch = new SpriteBatch();
+
 
         tarro.crear();
         lluvia.crear();

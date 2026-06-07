@@ -18,7 +18,7 @@ public class Tarro {
     private boolean herido = false;
     private int tiempoHeridoMax = 50;
     private int tiempoHerido;
-    
+
     private float tiempoBuffVelocidad = 0;
     private float tiempoDebuffVelocidad = 0;
     private float multiplicadorVelocidad = 1.0f;
@@ -89,8 +89,11 @@ public class Tarro {
         }
     }
 
-    public void destruir() {
-        bucketImage.dispose();
+    public void destruir()
+    {
+        if (sonidoHerido != null) {
+            sonidoHerido.dispose();
+        }
     }
 
     public boolean estaHerido() {
@@ -98,11 +101,13 @@ public class Tarro {
     }
     public void aplicarBuffVelocidad() {
         this.multiplicadorVelocidad = 2.0f; // Duplica la velocidad
-        this.tiempoBuffVelocidad = 5.0f; // Duración de 5 segundos
+        this.tiempoBuffVelocidad = 5.0f;
+        this.tiempoDebuffVelocidad = 0;
     }
-    
+
     public void aplicarDebuffVelocidad() {
-        this.multiplicadorVelocidad = 0.5f; // Duplica la velocidad
-        this.tiempoBuffVelocidad = 5.0f; // Duración de 5 segundos
+        this.multiplicadorVelocidad = 0.5f; // Reduce la velocidad
+        this.tiempoDebuffVelocidad = 5.0f;
+        this.tiempoBuffVelocidad = 0;
     }
 }

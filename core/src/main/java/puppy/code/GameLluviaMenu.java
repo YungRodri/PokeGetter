@@ -18,14 +18,27 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 			this.setScreen(new MainMenuScreen(this));
 		}
 
+        @Override
 		public void render() {
 			super.render(); // important!
 		}
 
-		public void dispose() {
-			batch.dispose();
-			font.dispose();
-		}
+        @Override
+        public void dispose() {
+            if (getScreen() != null) {
+                getScreen().dispose();
+            }
+
+            if (batch != null) {
+                batch.dispose();
+            }
+
+            if (font != null) {
+                font.dispose();
+            }
+
+            GestorRecursos.getInstance().liberarRecursos();
+        }
 
 		public SpriteBatch getBatch() {
 			return batch;
@@ -42,6 +55,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 		public void setHigherScore(int higherScore) {
 			this.higherScore = higherScore;
 		}
-		
+
 
 	}
