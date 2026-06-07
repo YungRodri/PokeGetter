@@ -14,37 +14,116 @@ public class Lluvia {
     private Array<Pokebola> pokebolas;
     private long lastDropTime;
 
-    private Texture gotaBuena;
+    private Texture pokebola;
     private Texture gotaMala;
     private Texture gotaCurativa;
     private Texture gotaRocketFuerte;
+    private Texture gotaVeloz;
+    private Texture gotaPeso;
 
     private Sound dropSound;
     private Music rainMusic;
 
     private EstadoJuego estadoJuego;
+    private Nivel nivelActual;
+    private int dificultadActual;
 
-    public Lluvia(Texture gotaBuena, Texture gotaMala, Texture gotaCurativa, Texture gotaRocketFuerte, Sound ss, Music mm) {
+    public Lluvia(Texture pokebola, Texture gotaMala, Texture gotaCurativa, Texture gotaRocketFuerte, Texture gotaVeloz, Texture gotaPeso, Sound ss, Music mm) {
         this.rainMusic = mm;
         this.dropSound = ss;
-        this.gotaBuena = gotaBuena;
+        this.pokebola = pokebola;
         this.gotaMala = gotaMala;
         this.gotaCurativa = gotaCurativa;
         this.gotaRocketFuerte = gotaRocketFuerte;
-        this.estadoJuego = new EstadoJuego();
+        this.gotaVeloz = gotaVeloz;
+        this.gotaPeso = gotaPeso;
+        this.estadoJuego = EstadoJuego.getInstance();
+        this.estadoJuego.reiniciar();
+    }
+    private Nivel crearNivelFacil() {
+        return new NivelBuilder()
+            .conProbabilidadRocketFuerte(5)
+            .conProbabilidadRocket(20)
+            .conProbabilidadCurativa(35)
+            .conProbabilidadVeloz(40)
+            .conProbabilidadPeso(45)
+            .conVelocidadNormal(260)
+            .conVelocidadCurativa(230)
+            .conVelocidadRocket(310)
+            .conVelocidadRocketFuerte(360)
+            .conVelocidadVeloz(360)
+            .conVelocidadPeso(360)
+            .conTiempoGeneracion(700000000)
+            .build();
     }
 
+    private Nivel crearNivelMedio() {
+        return new NivelBuilder()
+            .conProbabilidadRocketFuerte(10)
+            .conProbabilidadRocket(30)
+            .conProbabilidadCurativa(40)
+            .conProbabilidadVeloz(45)
+            .conProbabilidadPeso(50)
+            .conVelocidadNormal(300)
+            .conVelocidadCurativa(250)
+            .conVelocidadRocket(350)
+            .conVelocidadRocketFuerte(420)
+            .conVelocidadVeloz(420)
+            .conVelocidadPeso(420)
+            .conTiempoGeneracion(500000000)
+            .build();
+    }
+
+    private Nivel crearNivelDificil() {
+        return new NivelBuilder()
+            .conProbabilidadRocketFuerte(15)
+            .conProbabilidadRocket(40)
+            .conProbabilidadCurativa(45)
+            .conProbabilidadVeloz(55)
+            .conProbabilidadPeso(60)
+            .conVelocidadNormal(350)
+            .conVelocidadCurativa(290)
+            .conVelocidadRocket(430)
+            .conVelocidadRocketFuerte(520)
+            .conVelocidadVeloz(420)
+            .conVelocidadPeso(420)
+            .conTiempoGeneracion(350000000)
+            .build();
+    }
+    private void actualizarDificultad() {
+        int puntaje = estadoJuego.getPuntaje();
+
+        if (puntaje >= 10000) {
+            if (dificultadActual != 3) {
+                dificultadActual = 3;
+                nivelActual = crearNivelDificil();
+            }
+        } else if (puntaje >= 4000) {
+            if (dificultadActual != 2) {
+                dificultadActual = 2;
+                nivelActual = crearNivelMedio();
+            }
+        } else {
+            if (dificultadActual != 1) {
+                dificultadActual = 1;
+                nivelActual = crearNivelFacil();
+            }
+        }
+    }
     public void crear() {
         pokebolas = new Array<Pokebola>();
+
+        dificultadActual = 1;
+        nivelActual = crearNivelFacil();
+
         crearPokebola();
 
         rainMusic.setLooping(true);
         rainMusic.play();
     }
-
     public boolean actualizarMovimiento(Tarro tarro) {
 
-        if (TimeUtils.nanoTime() - lastDropTime > 500000000) {
+        if (TimeUtils.nanoTime() - lastDropTime > nivelActual.getTiempoGeneracion()) {
             crearPokebola();
         }
 
@@ -58,7 +137,7 @@ public class Lluvia {
                 pokebolas.removeIndex(i);
             } else if (pokebola.getBounds().overlaps(tarro.getArea())) {
 
-                pokebola.capturar(estadoJuego);
+                pokebola.capturar(estadoJuego, tarro);
                 dropSound.play();
 
                 pokebolas.removeIndex(i);
@@ -69,6 +148,9 @@ public class Lluvia {
             }
         }
 
+        actualizarDificultad();
+
+
         return true;
     }
 
@@ -77,21 +159,33 @@ public class Lluvia {
         float y = 480;
 
         int azar = MathUtils.random(1, 100);
+        Pokebola pokebola;
 
-        if (azar <= 10) {
-            // 10% Rocket fuerte: quita 2 vidas y cae más rápido
-            pokebolas.add(new PokebolaRocketFuerte(x, y, 420, gotaRocketFuerte));
-        } else if (azar <= 30) {
-            // 20% Rocket normal: quita 1 vida
-            pokebolas.add(new PokebolaRocket(x, y, 350, gotaMala));
-        } else if (azar <= 45) {
-            // 15% Curativa: recupera 1 vida
-            pokebolas.add(new PokebolaCurativa(x, y, 250, gotaCurativa));
+        if (azar <= nivelActual.getProbabilidadRocketFuerte()) {
+            pokebola = new PokebolaRocketFuerte(x, y, nivelActual.getVelocidadRocketFuerte(), gotaRocketFuerte,100);
+            pokebola.setEstrategiaMovimiento(new MovimientoZigZag());
+
+        } else if (azar <= nivelActual.getProbabilidadRocket()) {
+            pokebola = new PokebolaRocket(x, y, nivelActual.getVelocidadRocket(), gotaMala, 100);
+            pokebola.setEstrategiaMovimiento(new MovimientoRapido());
+
+        } else if (azar <= nivelActual.getProbabilidadCurativa()) {
+            pokebola = new PokebolaCurativa(x, y, nivelActual.getVelocidadCurativa(), gotaCurativa, 100);
+            pokebola.setEstrategiaMovimiento(new MovimientoNormal());
+            
+        } else if (azar <= nivelActual.getProbabilidadVeloz()) {
+            pokebola = new VelozBall(x, y, nivelActual.getVelocidadVeloz(), gotaVeloz, 100);
+            pokebola.setEstrategiaMovimiento(new MovimientoRapido());
+    
+        } else if (azar <= nivelActual.getProbabilidadPeso()) {
+            pokebola = new PesoBall(x, y, nivelActual.getVelocidadPeso(), gotaPeso, 100);
+            pokebola.setEstrategiaMovimiento(new MovimientoRapido());
         } else {
-            // 55% Normal: suma puntos
-            pokebolas.add(new PokebolaNormal(x, y, 300, gotaBuena));
+            pokebola = new PokebolaNormal(x, y, nivelActual.getVelocidadNormal(), this.pokebola, 100);
+            pokebola.setEstrategiaMovimiento(new MovimientoNormal());
         }
 
+        pokebolas.add(pokebola);
         lastDropTime = TimeUtils.nanoTime();
     }
 
@@ -121,5 +215,8 @@ public class Lluvia {
 
     public void continuar() {
         rainMusic.play();
+    }
+    public int getDificultadActual() {
+        return dificultadActual;
     }
 }

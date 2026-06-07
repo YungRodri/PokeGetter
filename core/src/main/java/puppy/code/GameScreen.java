@@ -4,88 +4,124 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class GameScreen implements Screen {
-	final GameLluviaMenu game;
+    private final GameLluviaMenu game;
     private OrthographicCamera camera;
-	private SpriteBatch batch;
-	private BitmapFont font;
-	private Tarro tarro;
-	private Lluvia lluvia;
+    private SpriteBatch batch;
+    private Tarro tarro;
+    private Lluvia lluvia;
+    private Texture fondo;
+    private BitmapFont fuente;
 
 
-	//boolean activo = true;
+    //boolean activo = true;
 
-	public GameScreen(final GameLluviaMenu game) {
-		this.game = game;
+    public GameScreen(final GameLluviaMenu game) {
+
+        this.game = game;
         this.batch = game.getBatch();
-        this.font = game.getFont();
-		  // load the images for the droplet and the bucket, 64x64 pixels each
-		  Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
-		  tarro = new Tarro(new Texture(Gdx.files.internal("bucket.png")),hurtSound);
 
-	      // load the drop sound effect and the rain background "music"
-        Texture gota = new Texture(Gdx.files.internal("drop.png"));
-        Texture gotaMala = new Texture(Gdx.files.internal("dropBad.png"));
-        Texture gotaCurativa = new Texture(Gdx.files.internal("dropHeal.png"));
-        Texture gotaRocketFuerte = new Texture(Gdx.files.internal("dropRocketStrong.png"));
+        GestorRecursos recursos = GestorRecursos.getInstance();
+
+        Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
+
+        tarro = new Tarro(
+            recursos.getTexturaTarro(),
+            hurtSound
+        );
+
+        Texture gota = GestorRecursos.getInstance().getTexturaPokebolaNormal();
+        Texture gotaMala = GestorRecursos.getInstance().getTexturaPokebolaRocket();
+        Texture gotaCurativa = GestorRecursos.getInstance().getTexturaPokebolaCurativa();
+        Texture gotaRocketFuerte = GestorRecursos.getInstance().getTexturaPokebolaRocketFuerte();
+        Texture gotaVeloz = GestorRecursos.getInstance().getTexturaPokebolaVeloz();
+        Texture gotaPeso = GestorRecursos.getInstance().getTexturaPokebolaPeso();
 
         Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+        Music bgMusic = Gdx.audio.newMusic(Gdx.files.internal("Pokemon_Center.mp3"));
+        lluvia = new Lluvia(gota, gotaMala, gotaCurativa, gotaRocketFuerte, gotaVeloz, gotaPeso, dropSound, bgMusic);
 
-        Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-        lluvia = new Lluvia(gota, gotaMala, gotaCurativa, gotaRocketFuerte, dropSound, rainMusic);
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 480);
 
-	      // camera
-	      camera = new OrthographicCamera();
-	      camera.setToOrtho(false, 800, 480);
-	      batch = new SpriteBatch();
-	      // creacion del tarro
-	      tarro.crear();
 
-	      // creacion de la lluvia
-	      lluvia.crear();
-	}
+        tarro.crear();
+        lluvia.crear();
 
-	@Override
-	public void render(float delta) {
-		//limpia la pantalla con color azul obscuro.
-		ScreenUtils.clear(0, 0, 0.2f, 1);
-		//actualizar matrices de la cámara
-		camera.update();
-		//actualizar
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		//dibujar textos
-        font.draw(batch, "Puntos: " + lluvia.getPuntaje(), 5, 475);
-        font.draw(batch, "Vidas: " + lluvia.getVidas(), 670, 475);
-        font.draw(batch, "HighScore: " + game.getHigherScore(), camera.viewportWidth / 2 - 50, 475);
+        Pixmap pixmapOriginal = new Pixmap(Gdx.files.internal("fondo.png"));
+        Pixmap pixmapDestino = new Pixmap(800, 480, pixmapOriginal.getFormat());
 
-		if (!tarro.estaHerido()) {
-			// movimiento del tarro desde teclado
-	        tarro.actualizarMovimiento();
-			// caida de la lluvia
-	       if (!lluvia.actualizarMovimiento(tarro)) {
-	    	  //actualizar HigherScore
-               if (game.getHigherScore() < lluvia.getPuntaje())
-               {
-                   game.setHigherScore(lluvia.getPuntaje());
-               }
-	    	  //ir a la ventana de finde juego y destruir la actual
-	    	  game.setScreen(new GameOverScreen(game));
-	    	  dispose();
-	       }
-		}
+        pixmapDestino.drawPixmap(pixmapOriginal,
+            0, 0, pixmapOriginal.getWidth(), pixmapOriginal.getHeight(),
+            0, 0, pixmapDestino.getWidth(), pixmapDestino.getHeight()
+        );
 
-		tarro.dibujar(batch);
-		lluvia.actualizarDibujoLluvia(batch);
+        this.fondo = new Texture(pixmapDestino);
+        pixmapOriginal.dispose();
+        pixmapDestino.dispose();
 
-		batch.end();
-	}
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("pokemon_pixel_font.ttf"));
+        FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+        parameter.size = 32;
+        parameter.color = com.badlogic.gdx.graphics.Color.WHITE;
+        parameter.borderWidth = 2f;
+        parameter.borderColor = Color.BLACK;
+
+        this.fuente = generator.generateFont(parameter);
+
+        generator.dispose();
+    }
+
+    @Override
+    public void render(float delta) {
+        ScreenUtils.clear(0, 0, 0.2f, 1);
+
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+
+        // Implementacion del fondo
+
+
+        // Movimiento del jugador solo si no está herido
+        if (!tarro.estaHerido()) {
+            tarro.actualizarMovimiento();
+        }
+
+        // La lluvia/pokebolas siempre se actualiza
+        if (!lluvia.actualizarMovimiento(tarro)) {
+
+            if (game.getHigherScore() < lluvia.getPuntaje()) {
+                game.setHigherScore(lluvia.getPuntaje());
+            }
+
+            game.setScreen(new GameOverScreen(game, lluvia.getPuntaje()));
+            dispose();
+            return;
+        }
+
+        batch.begin();
+
+        batch.draw(fondo, 0,0, 800, 480);
+        tarro.dibujar(batch);
+        lluvia.actualizarDibujoLluvia(batch);
+
+        fuente.draw(batch, "Puntos: " + lluvia.getPuntaje(), 5, 475);
+        fuente.draw(batch, "Vidas: " + lluvia.getVidas(), 670, 475);
+        fuente.draw(batch, "HighScore: " + game.getHigherScore(), camera.viewportWidth / 2 - 50, 475);
+        fuente.draw(batch, "Nivel: " + lluvia.getDificultadActual(), 360, 445);
+
+        batch.end();
+    }
 
 	@Override
 	public void resize(int width, int height) {
@@ -117,7 +153,7 @@ public class GameScreen implements Screen {
 	public void dispose() {
       tarro.destruir();
       lluvia.destruir();
-
+      fuente.dispose();
 	}
 
 }
