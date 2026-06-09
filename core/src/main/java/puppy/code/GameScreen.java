@@ -58,7 +58,7 @@ public class GameScreen implements Screen {
         tarro.crear();
         lluvia.crear();
 
-        Pixmap pixmapOriginal = new Pixmap(Gdx.files.internal("fondo.png"));
+        Pixmap pixmapOriginal = new Pixmap(Gdx.files.internal("Fondo.png"));
         Pixmap pixmapDestino = new Pixmap(800, 480, pixmapOriginal.getFormat());
 
         pixmapDestino.drawPixmap(pixmapOriginal,
