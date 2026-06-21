@@ -135,7 +135,7 @@ public class Lluvia {
 
             if (pokebola.estaEliminada()) {
                 pokebolas.removeIndex(i);
-            } else if (pokebola.getBounds().overlaps(tarro.getArea())) {
+            } else if (tarro.colisionaCon(pokebola)) {
 
                 pokebola.capturar(estadoJuego, tarro);
                 dropSound.play();
@@ -172,11 +172,11 @@ public class Lluvia {
         } else if (azar <= nivelActual.getProbabilidadCurativa()) {
             pokebola = new PokebolaCurativa(x, y, nivelActual.getVelocidadCurativa(), gotaCurativa, 100);
             pokebola.setEstrategiaMovimiento(new MovimientoNormal());
-            
+
         } else if (azar <= nivelActual.getProbabilidadVeloz()) {
             pokebola = new VelozBall(x, y, nivelActual.getVelocidadVeloz(), gotaVeloz, 100);
             pokebola.setEstrategiaMovimiento(new MovimientoRapido());
-    
+
         } else if (azar <= nivelActual.getProbabilidadPeso()) {
             pokebola = new PesoBall(x, y, nivelActual.getVelocidadPeso(), gotaPeso, 100);
             pokebola.setEstrategiaMovimiento(new MovimientoRapido());

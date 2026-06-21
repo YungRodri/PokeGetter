@@ -28,8 +28,8 @@ public class Tarro {
         this.sonidoHerido = ss;
     }
 
-    public Rectangle getArea() {
-        return bucket;
+    public boolean colisionaCon(Pokebola pokebola) {
+        return pokebola.colisionaCon(bucket.x, bucket.y, bucket.width, bucket.height);
     }
 
     public void crear() {

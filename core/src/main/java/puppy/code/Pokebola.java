@@ -62,8 +62,11 @@ public final void actualizar(float delta) {
         batch.draw(textura, x, y, 64, 64);
     }
 
-    public Rectangle getBounds() {
-        return bounds;
+    public boolean colisionaCon(float otroX, float otroY, float otroAncho, float otroAlto) {
+        return this.x < otroX + otroAncho &&
+            this.x + this.bounds.width > otroX &&
+            this.y < otroY + otroAlto &&
+            this.y + this.bounds.height > otroY;
     }
 
     public boolean salioDePantalla() {
